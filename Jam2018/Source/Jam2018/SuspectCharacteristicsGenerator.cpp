@@ -16,6 +16,18 @@ ASuspectCharacteristicsGenerator::ASuspectCharacteristicsGenerator()
 
 }
 
+bool ASuspectCharacteristicsGenerator::IsSuspectObj(int id)
+{
+	if (mvSuspects[id].characteristics[obj_char].mbPresent && mvSuspects[id].characteristics[obj_char].pCharacteristics->GetCorrespondingValue(mvSuspects[id].characteristics[obj_char].mvParameters[0]) == obj_type)
+		return true;
+	return false;
+}
+
+void ASuspectCharacteristicsGenerator::SuspectDied(int id)
+{
+
+}
+
 void ASuspectCharacteristicsGenerator::AddCharacteristic(ACharacteristic* characteristic)
 {
 	CharacteristicHolder holder;
@@ -46,12 +58,6 @@ void ASuspectCharacteristicsGenerator::BeginPlay()
 	for (int i = 0; i < characteristics.Num(); i++)
 	{			
 		AddCharacteristic(Cast<ACharacteristic>(characteristics[i]));
-		AddCharacteristic(Cast<ACharacteristic>(characteristics[i]));
-		AddCharacteristic(Cast<ACharacteristic>(characteristics[i]));
-		AddCharacteristic(Cast<ACharacteristic>(characteristics[i]));
-		AddCharacteristic(Cast<ACharacteristic>(characteristics[i]));
-		AddCharacteristic(Cast<ACharacteristic>(characteristics[i]));
-		AddCharacteristic(Cast<ACharacteristic>(characteristics[i]));
 	}
 
 	CreateSuspects();
@@ -59,6 +65,9 @@ void ASuspectCharacteristicsGenerator::BeginPlay()
 	DistributeCharacteristics();
 
 	DistributeParameters();
+
+	ModifyMeshes();
+
 }
 
 void ASuspectCharacteristicsGenerator::CreateSuspects()
@@ -71,11 +80,15 @@ void ASuspectCharacteristicsGenerator::CreateSuspects()
 		FActorSpawnParameters SpawnInfo;
 		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		FTransform transform(FVector(i*100, i*100, 300.0f));
-		mvpCharacters.push_back(GetWorld()->SpawnActor<AGhostCharacter>(mGhostCharacter, transform));
-		
+		AGhostCharacter * new_suspect = GetWorld()->SpawnActor<AGhostCharacter>(mGhostCharacter, transform);
+		new_suspect->Id = i;
+		mvpCharacters.push_back(new_suspect);				
 		suspect.id = i;
 		mvSuspects.push_back(suspect);
 	}
+
+	obj_char = FMath::RandRange(0, mvCharacteristics.size() - 1);
+	obj_type = FMath::RandRange(0, mvCharacteristics[obj_char].pCharacteristics->GetCorrespondingValue(1.f));
 }
 
 template<typename T>
@@ -158,6 +171,16 @@ void ASuspectCharacteristicsGenerator::DistributeParameters()
 				CharacteristicHolder& holder = mvSuspects[w].characteristics[i];
 				if (holder.mbPresent)
 				{
+					if (i == obj_char)
+					{
+						int type = mvSuspects[w].characteristics[i].pCharacteristics->GetCorrespondingValue(rand_buffer[id]);
+						while (type == obj_type)
+						{
+							rand_buffer[id] = FMath::RandRange(0.f, 1.f);
+							type = mvSuspects[w].characteristics[i].pCharacteristics->GetCorrespondingValue(rand_buffer[id]);
+						}
+					}
+
 					holder.mvParameters[j] = rand_buffer[id];
 					id++;
 				}
@@ -197,3 +220,22 @@ void ASuspectCharacteristicsGenerator::DistributeParameters()
 	}
 }
 
+void ASuspectCharacteristicsGenerator::ModifyMeshes()
+{
+	for (size_t i = 0; i < mSuspectAmount; ++i)
+	{
+		for (size_t j = 0; j < mvSuspects[i].characteristics.size(); ++j)
+		{
+			if (mvSuspects[i].characteristics[j].mbPresent)
+			{
+				int object, type;
+				mvSuspects[i].characteristics[j].pCharacteristics->GetData(object, type);
+				int id = FPlatformMath::FloorToInt(mvSuspects[i].characteristics[j].mvParameters[0] * type - 0.001f);
+
+				mvpCharacters[i]->SetCharacteristic(object, id);
+			}
+		}
+
+	}
+
+}
