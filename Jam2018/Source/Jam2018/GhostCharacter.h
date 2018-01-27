@@ -6,7 +6,9 @@
 #include "GameFramework/Character.h"
 #include "GhostCharacter.generated.h"
 
-UCLASS()
+
+
+UCLASS(ClassGroup = (GhostCharacter), meta = (BlueprintSpawnableComponent), abstract, Blueprintable)
 class JAM2018_API AGhostCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -26,6 +28,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION(BlueprintNativeEvent)
-	bool MoveToLocation(FVector target_pos, FVector LookAtPosFinished);
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "GhostCharacter")
+	void SetCharacteristic(const int CharID, const int TypeId);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "GhostCharacter")
+		bool MoveToLocation(FVector target_pos, FVector LookAtPosFinished);
 };

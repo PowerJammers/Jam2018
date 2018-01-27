@@ -41,6 +41,7 @@ protected:
 	void CreateSuspects();
 	void DistributeCharacteristics();
 	void DistributeParameters();
+	void ModifyMeshes();
 
 	UPROPERTY(Editanywhere)
 	TSubclassOf<AGhostCharacter> mGhostCharacter;
@@ -58,5 +59,7 @@ private:
 	std::vector<CharacteristicHolder> mvMusteristics;
 	std::vector<Suspect> mvSuspects;
 	std::vector<AGhostCharacter *> mvpCharacters;
+
+	int obj_char, obj_type;
 	
 };
