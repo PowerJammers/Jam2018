@@ -3,7 +3,6 @@
 #include "SuspectCharacteristicsGenerator.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "EngineUtils.h"
-
 #include <random>
 #include <algorithm>
 #include <chrono>
@@ -69,6 +68,10 @@ void ASuspectCharacteristicsGenerator::CreateSuspects()
 	suspect.musteristics = mvMusteristics;
 	for (int i = 0; i < mSuspectAmount; i++)
 	{
+		FActorSpawnParameters SpawnInfo;
+		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		
+		mvpCharacters.push_back(GetWorld()->SpawnActor<AJam2018Character>(AJam2018Character::StaticClass(), SpawnInfo));
 		suspect.id = i;
 		mvSuspects.push_back(suspect);
 	}

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Characteristic.h"
+#include "Jam2018Character.h"
 #include <vector>
 #include "SuspectCharacteristicsGenerator.generated.h"
 
@@ -54,5 +55,6 @@ private:
 	std::vector<int> mvCharacteristicAmounts;
 	std::vector<CharacteristicHolder> mvMusteristics;
 	std::vector<Suspect> mvSuspects;
+	std::vector<AJam2018Character *> mvpCharacters;
 	
 };
