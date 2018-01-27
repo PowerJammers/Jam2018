@@ -65,10 +65,10 @@ void ASuspectCharacteristicsGenerator::ModifyMeshes()
 		for (size_t j = 0; j < mvSuspects[i].characteristics.size(); ++j)
 		{
 			if (mvSuspects[i].characteristics[j].mbPresent)
-			{
+			{				
 				int object, type;
 				mvSuspects[i].characteristics[j].pCharacteristics->GetData(object, type);
-				int id = FPlatformMath::FloorToInt(mvSuspects[i].characteristics[j].mvParameters[0] * type - 0.001f);
+				int id = FPlatformMath::FloorToInt(mvSuspects[i].characteristics[j].mvParameters[0] * type * 0.9999f);
 
 				mvpCharacters[i]->SetCharacteristic(object, id);
 			}
@@ -86,10 +86,11 @@ void ASuspectCharacteristicsGenerator::CreateSuspects()
 	suspect.musteristics = mvMusteristics;
 	for (int i = 0; i < mSuspectAmount; i++)
 	{
+		int randChar = FMath::RandRange(0,2);
 		FActorSpawnParameters SpawnInfo;
 		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		FTransform transform(FVector(i*100, i*100, 300.0f));
-		mvpCharacters.push_back(GetWorld()->SpawnActor<AGhostCharacter>(mGhostCharacter, transform));				
+		mvpCharacters.push_back(GetWorld()->SpawnActor<AGhostCharacter>(mGhostCharacter[randChar], transform));				
 		suspect.id = i;
 		mvSuspects.push_back(suspect);
 	}
