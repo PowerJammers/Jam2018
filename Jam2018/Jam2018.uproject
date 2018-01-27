@@ -1,13 +1,16 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{4EA44ED7-4E9F-BDBA-54C2-A28193EA12BC}",
+	"EngineAssociation": "4.16",
 	"Category": "",
 	"Description": "",
 	"Modules": [
 		{
 			"Name": "Jam2018",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		}
 	]
 }

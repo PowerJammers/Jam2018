@@ -1,0 +1,70 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "JamCrowdManager.generated.h"
+
+struct FCrowdGroup;
+
+USTRUCT()
+struct FCrowdGroupMember
+{
+	GENERATED_BODY()
+
+	AActor * actor;
+	FCrowdGroup * group;
+};
+
+USTRUCT()
+struct FCrowdGroup
+{
+	GENERATED_BODY()
+
+	TArray<FCrowdGroupMember> GroupMembers;
+	FVector GroupMidpoint;
+	float GroupRadius = 0;
+};
+
+UCLASS()
+class JAM2018_API AJamCrowdManager : public AActor
+{
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	AJamCrowdManager();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable)
+	void OrganizeGroups();
+
+	UFUNCTION(BlueprintCallable)
+	void SetLocationsOfGroupMembers();
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<AActor*> CrowdActors;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FCrowdGroup> CrowdGroups;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float MaxGroupRadius;
+	UPROPERTY(BlueprintReadWrite)
+	float MaxGroupRadiusSq;
+
+	private:
+
+	TArray<FCrowdGroupMember> MovingMembers;
+	void SetLocationsOfGroupMembers(FCrowdGroup & group);
+
+	void SetAgentToMove();
+};
