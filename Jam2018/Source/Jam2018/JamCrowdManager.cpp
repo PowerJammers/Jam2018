@@ -2,6 +2,7 @@
 
 #include "JamCrowdManager.h"
 #include "MoveTowardsPosBehaviorComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AJamCrowdManager::AJamCrowdManager()
@@ -53,18 +54,24 @@ void AJamCrowdManager::Tick(float DeltaTime)
 		difference++;
 	}
 
-	EllapsedTimeBetweenAgentsMoving += DeltaTime;
 
-	if (MovingMembers.Num() < MaxAgentsMoving && EllapsedTimeBetweenAgentsMoving > TimeBetweenAgentsMoving)
+	if (MovingMembers.Num() < MaxAgentsMoving)
 	{
-		if (SetAgentToMove())
-			EllapsedTimeBetweenAgentsMoving = 0.f;
+		if (EllapsedTimeBetweenAgentsMoving > TimeBetweenAgentsMoving)
+		{
+			if (SetAgentToMove())
+				EllapsedTimeBetweenAgentsMoving = 0.f;
+		}
+		else
+		{
+			EllapsedTimeBetweenAgentsMoving += DeltaTime;
+		}
 	}
 }
 
 void AJamCrowdManager::OrganizeGroups()
 {
-	for (AActor * actor : CrowdActors)
+	for (AGhostCharacter * actor : CrowdActors)
 	{
 		bool added = false;
 		FVector pos = actor->GetActorLocation();
@@ -127,12 +134,7 @@ void AJamCrowdManager::SetLocationsOfGroupMembers(FCrowdGroup & group)
 		FVector pos_in_circle(x, y, 0);
 		pos_in_circle *= radius;
 
-		//member.actor->SetActorLocation(group.GroupMidpoint + pos_in_circle);
-		if (auto * moveCmp = member.actor->FindComponentByClass<UMoveTowardsPosBehaviorComponent>())
-		{
-			moveCmp->SetTargetPos(group.GroupMidpoint + pos_in_circle, 10.f);
-		}
-
+		member.actor->MoveToLocation(group.GroupMidpoint + pos_in_circle, group.GroupMidpoint);
 		degrees += degrees_delta;
 	}
 }
@@ -168,9 +170,6 @@ bool AJamCrowdManager::SetAgentToMove()
 
 	SetLocationsOfGroupMembers(group_from);
 
-	if (auto * moveCmp = new_moving.actor->FindComponentByClass<UMoveTowardsPosBehaviorComponent>())
-	{
-		moveCmp->SetTargetPos(group_to.GroupMidpoint, 10.f);
-	}
+	new_moving.actor->MoveToLocation(group_to.GroupMidpoint, group_to.GroupMidpoint);
 	return true;
 }
