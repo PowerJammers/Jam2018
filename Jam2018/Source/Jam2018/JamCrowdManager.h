@@ -79,4 +79,7 @@ public:
 	void SetLocationsOfGroupMembers(FCrowdGroup & group);
 
 	bool SetAgentToMove();
+
+	UFUNCTION(BlueprintCallable)
+	void DeleteAgent(AGhostCharacter * agent);
 };

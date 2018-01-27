@@ -180,3 +180,48 @@ bool AJamCrowdManager::SetAgentToMove()
 	new_moving.actor->MoveToLocation(group_to.GroupMidpoint, group_to.GroupMidpoint);
 	return true;
 }
+
+
+void AJamCrowdManager::DeleteAgent(AGhostCharacter * agent)
+{
+	bool found = false;
+	for (FCrowdGroup & group : CrowdGroups)
+	{
+
+		for (int i = 0; i < group.GroupMembers.Num(); i++)
+		{
+			if (group.GroupMembers[i].actor == agent)
+			{
+				group.GroupMembers.RemoveAt(i);
+				found = true;
+				break;
+			}
+		}
+		if (found)
+		{
+			break;
+		}
+	}
+
+	if (!found)
+	{
+		for (int i = 0; i < MovingMembers.Num(); i++)
+		{
+			if (MovingMembers[i].actor == agent)
+			{
+				MovingMembers.RemoveAt(i);
+				break;
+			}
+		}
+	}
+
+	for (int i = 0; i < CrowdActors.Num(); i++)
+	{
+		if (CrowdActors[i] == agent)
+		{
+			CrowdActors.RemoveAt(i);
+			return;
+		}
+	}
+	//agent->DestroyActor();
+}
