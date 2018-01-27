@@ -4,6 +4,8 @@
 #include "MoveTowardsPosBehaviorComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GhostCharacter.h"
+#include "PlayerAvoiderComponent.h"
+
 // Sets default values
 AJamCrowdManager::AJamCrowdManager()
 {
@@ -23,7 +25,6 @@ void AJamCrowdManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TArray<int> to_delete;
 	for (int i = 0; i < MovingMembers.Num(); i++)
 	{
 		FCrowdGroupMember & moving_agent = MovingMembers[i];
@@ -37,21 +38,20 @@ void AJamCrowdManager::Tick(float DeltaTime)
 		}
 		else
 		{
-			to_delete.Add(i);
+
 			moving_agent.group->GroupMembers.Add(moving_agent);
 			SetLocationsOfGroupMembers(*moving_agent.group);
+			if (auto * avoider = moving_agent.actor->FindComponentByClass<UPlayerAvoiderComponent>())
+			{
+				avoider->SetComponentTickEnabled(true);
+			}
+			MovingMembers.RemoveAt(i);
+			break;
 			//if (auto * moveCmp = moving_agent.actor->FindComponentByClass<UMoveTowardsPosBehaviorComponent>())
 			//{
 			//	moveCmp->SetTargetPos(moving_agent.actor->GetActorLocation(), 10.f);
 			//}
 		}
-	}
-
-	int difference = 0;
-	for (int index : to_delete)
-	{
-		MovingMembers.RemoveAt(index - difference);
-		difference++;
 	}
 
 
@@ -116,9 +116,11 @@ void AJamCrowdManager::SetLocationsOfGroupMembers()
 		SetLocationsOfGroupMembers(group);
 	}
 }
-void AJamCrowdManager::SetLocationsOfGroupMembers(FCrowdGroup & group)
+
+
+void AJamCrowdManager::SetLocationsOfGroupMembers(FCrowdGroup & group, bool update_group_mid)
 {
-	float radius_per_member = 50.f;
+	float radius_per_member = 30.f;
 	int group_size = group.GroupMembers.Num();
 	if (group_size == 1)
 		return;
@@ -126,13 +128,15 @@ void AJamCrowdManager::SetLocationsOfGroupMembers(FCrowdGroup & group)
 	group.GroupRadius = radius;
 	float degrees_delta = 360.f / group_size;
 	float degrees = 0.f;
-	FVector midpoint = FVector::ZeroVector;
-	for (FCrowdGroupMember & member : group.GroupMembers)
+	if (update_group_mid)
 	{
-		midpoint += member.actor->GetActorLocation();
+		FVector midpoint = FVector::ZeroVector;
+		for (FCrowdGroupMember & member : group.GroupMembers)
+		{
+			midpoint += member.actor->GetActorLocation();
+		}
+		group.GroupMidpoint = midpoint / group.GroupMembers.Num();
 	}
-	group.GroupMidpoint = midpoint / group.GroupMembers.Num();
-
 	for (FCrowdGroupMember & member : group.GroupMembers)
 	{
 		float x = FMath::Cos(FMath::DegreesToRadians(degrees));
@@ -178,6 +182,12 @@ bool AJamCrowdManager::SetAgentToMove()
 	SetLocationsOfGroupMembers(group_from);
 
 	new_moving.actor->MoveToLocation(group_to.GroupMidpoint, group_to.GroupMidpoint);
+
+	if (auto * avoider = new_moving.actor->FindComponentByClass<UPlayerAvoiderComponent>())
+	{
+		avoider->SetComponentTickEnabled(false);
+	}
+
 	return true;
 }
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TimerManager.h"
 #include "JamCrowdManager.generated.h"
 
 struct FCrowdGroup;
@@ -76,10 +77,11 @@ public:
 	private:
 
 	TArray<FCrowdGroupMember> MovingMembers;
-	void SetLocationsOfGroupMembers(FCrowdGroup & group);
+	void SetLocationsOfGroupMembers(FCrowdGroup & group, bool update_group_mid = true);
 
 	bool SetAgentToMove();
 
 	UFUNCTION(BlueprintCallable)
 	void DeleteAgent(AGhostCharacter * agent);
+
 };

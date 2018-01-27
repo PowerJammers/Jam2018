@@ -34,6 +34,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "GhostCharacter")
 	bool MoveToLocation(FVector target_pos, FVector LookAtPosFinished);
 
+
 	UPROPERTY(BlueprintReadOnly)
 	int Id;
 };
