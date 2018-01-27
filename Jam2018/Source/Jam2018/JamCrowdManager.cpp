@@ -33,7 +33,7 @@ void AJamCrowdManager::Tick(float DeltaTime)
 		if (distance_to_target > moving_agent.group->GroupRadius+10.f)
 		{
 			dir.Normalize();
-			dir *= 150.f * DeltaTime;
+			dir *= AgentsMoveVelocity * DeltaTime;
 
 			moving_agent.actor->SetActorLocation(cur_pos + dir);
 		}
@@ -52,9 +52,12 @@ void AJamCrowdManager::Tick(float DeltaTime)
 		difference++;
 	}
 
-	if (MovingMembers.Num() < 1)
+	EllapsedTimeBetweenAgentsMoving += DeltaTime;
+
+	if (MovingMembers.Num() < MaxAgentsMoving && EllapsedTimeBetweenAgentsMoving > TimeBetweenAgentsMoving)
 	{
 		SetAgentToMove();
+		EllapsedTimeBetweenAgentsMoving = 0.f;
 	}
 }
 
@@ -138,7 +141,7 @@ void AJamCrowdManager::SetAgentToMove()
 	return;
 
 	FCrowdGroup & group_from = CrowdGroups[index_group_from];
-	if(group_from.GroupMembers.Num() == 1)
+	if(group_from.GroupMembers.Num() <= 1)
 		return;
 	int index_actor = FMath::RandRange(0, group_from.GroupMembers.Num() - 1);
 	FCrowdGroup & group_to = CrowdGroups[index_group_to];

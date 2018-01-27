@@ -61,6 +61,17 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	float MaxGroupRadiusSq;
 
+	UPROPERTY(EditDefaultsOnly)
+	float AgentsMoveVelocity;
+
+	UPROPERTY(EditDefaultsOnly)
+	int MaxAgentsMoving;
+
+	UPROPERTY(EditDefaultsOnly)
+	float TimeBetweenAgentsMoving;
+
+	float EllapsedTimeBetweenAgentsMoving;
+
 	private:
 
 	TArray<FCrowdGroupMember> MovingMembers;
