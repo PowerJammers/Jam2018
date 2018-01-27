@@ -41,6 +41,7 @@ protected:
 	void CreateSuspects();
 	void DistributeCharacteristics();
 	void DistributeParameters();
+	void ModifyMeshes();
 
 	UPROPERTY(Editanywhere)
 	TSubclassOf<AGhostCharacter> mGhostCharacter;

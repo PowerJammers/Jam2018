@@ -18,12 +18,18 @@ public:
 
 	int GetParameterAmount() { return mvParameters.size(); }
 	virtual void SetParameter(int id, float value) {};
+	void GetData(int& object, int& type){object = mObject; type = mType;}
 
 	UPROPERTY(Editanywhere)
 	bool mbIsMust = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(Editanywhere)
+	int mObject;
+	UPROPERTY(Editanywhere)
+	int mType;
 
 	std::vector<float> mvParameters; // The floats are temporal, PARAMETER class goes here
 	
