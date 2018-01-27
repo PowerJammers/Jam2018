@@ -23,9 +23,24 @@ bool ASuspectCharacteristicsGenerator::IsSuspectObj(int id)
 	return false;
 }
 
+bool ASuspectCharacteristicsGenerator::IsSuspectHinter(int id)
+{
+	if (mvSuspects[id].characteristics[hint_char].mbPresent && mvSuspects[id].characteristics[hint_char].pCharacteristics->GetCorrespondingValue(mvSuspects[id].characteristics[hint_char].mvParameters[0]) == hint_type)
+		return true;
+	return false;
+}
+
 void ASuspectCharacteristicsGenerator::SuspectDied(int id)
 {
+	mvSuspects[id].dead = true;
 
+	if (IsSuspectObj(id))
+		; // Lose game?
+	if (IsSuspectHinter(id))
+	{
+		if (!AreHintersLeft())
+			GetNewHinters();
+	}
 }
 
 void ASuspectCharacteristicsGenerator::AddCharacteristic(ACharacteristic* characteristic)
@@ -87,6 +102,14 @@ void ASuspectCharacteristicsGenerator::CreateSuspects()
 
 	obj_char = FMath::RandRange(0, mvCharacteristics.size() - 1);
 	obj_type = FMath::RandRange(0, mvCharacteristics[obj_char].pCharacteristics->GetCorrespondingValue(1.f));
+
+	do
+	{
+		hint_char = FMath::RandRange(0, mvCharacteristics.size() - 1);
+		hint_type = FMath::RandRange(0, mvCharacteristics[hint_char].pCharacteristics->GetCorrespondingValue(1.f));
+	} while (hint_char == obj_char && hint_type == obj_type);
+
+
 }
 
 template<typename T>
@@ -174,6 +197,11 @@ void ASuspectCharacteristicsGenerator::DistributeParameters()
 						int type = mvSuspects[w].characteristics[i].pCharacteristics->GetCorrespondingValue(rand_buffer[id]);
 						while (type == obj_type)
 						{
+							if (obj_set == false)
+							{
+								obj_set = true;
+								break;
+							}
 							rand_buffer[id] = FMath::RandRange(0.f, 1.f);
 							type = mvSuspects[w].characteristics[i].pCharacteristics->GetCorrespondingValue(rand_buffer[id]);
 						}
@@ -233,7 +261,28 @@ void ASuspectCharacteristicsGenerator::ModifyMeshes()
 				mvpCharacters[i]->SetCharacteristic(object, id);
 			}
 		}
-
 	}
 
+}
+
+bool ASuspectCharacteristicsGenerator::AreHintersLeft()
+{
+	bool hinters_left = false;
+	for (int i = 0; i < mvSuspects.size(); i++)
+	{
+		Suspect& suspect = mvSuspects[i];
+		if (suspect.dead)
+			continue;
+
+		CharacteristicHolder& holder = suspect.characteristics[hint_char];
+		if (holder.mbPresent)
+			if (holder.pCharacteristics->GetCorrespondingValue(holder.mvParameters[0]) == hint_type)
+				return true;
+	}
+	return false;
+}
+
+void ASuspectCharacteristicsGenerator::GetNewHinters()
+{
+	for()
 }

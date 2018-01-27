@@ -34,6 +34,7 @@ public:
 	ASuspectCharacteristicsGenerator();
 
 	bool IsSuspectObj(int id);
+	bool IsSuspectHinter(int id);
 	void SuspectDied(int id);
 
 	void AddCharacteristic(ACharacteristic* characteristic);
@@ -46,6 +47,9 @@ protected:
 	void DistributeCharacteristics();
 	void DistributeParameters();
 	void ModifyMeshes();
+
+	bool AreHintersLeft();
+	void GetNewHinters();
 
 	UPROPERTY(Editanywhere)
 	TSubclassOf<AGhostCharacter> mGhostCharacter;
@@ -64,6 +68,6 @@ private:
 	std::vector<Suspect> mvSuspects;
 	std::vector<AGhostCharacter *> mvpCharacters;
 
-	int obj_char, obj_type;
-	
+	int obj_char, obj_type, hint_char, hint_type;
+	bool obj_set = false;
 };
