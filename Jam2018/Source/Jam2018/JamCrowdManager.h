@@ -77,5 +77,5 @@ public:
 	TArray<FCrowdGroupMember> MovingMembers;
 	void SetLocationsOfGroupMembers(FCrowdGroup & group);
 
-	void SetAgentToMove();
+	bool SetAgentToMove();
 };

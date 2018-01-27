@@ -10,6 +10,7 @@ UMoveTowardsPosBehaviorComponent::UMoveTowardsPosBehaviorComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	SetComponentTickEnabled(false);
 	// ...
 }
 
@@ -20,7 +21,6 @@ void UMoveTowardsPosBehaviorComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-
 }
 
 
@@ -37,15 +37,24 @@ void UMoveTowardsPosBehaviorComponent::TickComponent(float DeltaTime, ELevelTick
 	if (distance_to_target > DistanceThreshold)
 	{
 		dir.Normalize();
-		dir *= MoveVelocity;
+		dir *= MoveVelocity*DeltaTime;
 
 		owner->SetActorLocation(pos + dir);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Log, TEXT("%s arrived to target pos"), *owner->GetName());
+		SetComponentTickEnabled(false);
 	}
 
 	// ...
+}
+void UMoveTowardsPosBehaviorComponent::SetTargetPos(FVector target_pos, float threshold)
+{
+	//PrimaryComponentTick.bCanEverTick = true;
+	//SetActive(true);
+	SetComponentTickEnabled(true);
+	Target = target_pos;
+	DistanceThreshold = threshold;
 }
 

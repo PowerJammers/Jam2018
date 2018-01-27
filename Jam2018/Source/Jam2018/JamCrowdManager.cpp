@@ -23,32 +23,33 @@ void AJamCrowdManager::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	TArray<int> to_delete;
-	for (int i = 0; i < MovingMembers.Num() ; i++)
+	for (int i = 0; i < MovingMembers.Num(); i++)
 	{
 		FCrowdGroupMember & moving_agent = MovingMembers[i];
 		FVector cur_pos = moving_agent.actor->GetActorLocation();
 
 		FVector dir = moving_agent.group->GroupMidpoint - cur_pos;
 		float distance_to_target = dir.Size();
-		if (distance_to_target > moving_agent.group->GroupRadius+10.f)
+		if (distance_to_target > moving_agent.group->GroupRadius + 10.f)
 		{
-			dir.Normalize();
-			dir *= AgentsMoveVelocity * DeltaTime;
 
-			moving_agent.actor->SetActorLocation(cur_pos + dir);
 		}
 		else
 		{
 			to_delete.Add(i);
 			moving_agent.group->GroupMembers.Add(moving_agent);
 			SetLocationsOfGroupMembers(*moving_agent.group);
+			//if (auto * moveCmp = moving_agent.actor->FindComponentByClass<UMoveTowardsPosBehaviorComponent>())
+			//{
+			//	moveCmp->SetTargetPos(moving_agent.actor->GetActorLocation(), 10.f);
+			//}
 		}
 	}
 
 	int difference = 0;
 	for (int index : to_delete)
 	{
-		MovingMembers.RemoveAt(index- difference);
+		MovingMembers.RemoveAt(index - difference);
 		difference++;
 	}
 
@@ -56,8 +57,8 @@ void AJamCrowdManager::Tick(float DeltaTime)
 
 	if (MovingMembers.Num() < MaxAgentsMoving && EllapsedTimeBetweenAgentsMoving > TimeBetweenAgentsMoving)
 	{
-		SetAgentToMove();
-		EllapsedTimeBetweenAgentsMoving = 0.f;
+		if (SetAgentToMove())
+			EllapsedTimeBetweenAgentsMoving = 0.f;
 	}
 }
 
@@ -126,23 +127,35 @@ void AJamCrowdManager::SetLocationsOfGroupMembers(FCrowdGroup & group)
 		FVector pos_in_circle(x, y, 0);
 		pos_in_circle *= radius;
 
-		member.actor->SetActorLocation(group.GroupMidpoint + pos_in_circle);
+		//member.actor->SetActorLocation(group.GroupMidpoint + pos_in_circle);
+		if (auto * moveCmp = member.actor->FindComponentByClass<UMoveTowardsPosBehaviorComponent>())
+		{
+			moveCmp->SetTargetPos(group.GroupMidpoint + pos_in_circle, 10.f);
+		}
 
 		degrees += degrees_delta;
 	}
 }
 
-void AJamCrowdManager::SetAgentToMove()
+bool AJamCrowdManager::SetAgentToMove()
 {
-	int index_group_from = FMath::RandRange(0, CrowdGroups.Num()-1);
+	int index_group_from = FMath::RandRange(0, CrowdGroups.Num() - 1);
 	int index_group_to = FMath::RandRange(0, CrowdGroups.Num() - 1);
 
-	if(index_group_from == index_group_to)
-	return;
+	if (index_group_from == index_group_to)
+		return false;
 
 	FCrowdGroup & group_from = CrowdGroups[index_group_from];
-	if(group_from.GroupMembers.Num() <= 1)
-		return;
+
+	if (group_from.GroupMembers.Num() == 0)
+	{
+		CrowdGroups.RemoveAt(index_group_from);
+		return false;
+	}
+
+	if (group_from.GroupMembers.Num() <= 2)
+		return false;
+
 	int index_actor = FMath::RandRange(0, group_from.GroupMembers.Num() - 1);
 	FCrowdGroup & group_to = CrowdGroups[index_group_to];
 
@@ -154,4 +167,10 @@ void AJamCrowdManager::SetAgentToMove()
 	MovingMembers.Add(new_moving);
 
 	SetLocationsOfGroupMembers(group_from);
+
+	if (auto * moveCmp = new_moving.actor->FindComponentByClass<UMoveTowardsPosBehaviorComponent>())
+	{
+		moveCmp->SetTargetPos(group_to.GroupMidpoint, 10.f);
+	}
+	return true;
 }

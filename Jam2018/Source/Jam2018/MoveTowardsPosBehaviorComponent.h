@@ -7,7 +7,7 @@
 #include "MoveTowardsPosBehaviorComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent),Blueprintable )
 class JAM2018_API UMoveTowardsPosBehaviorComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -23,11 +23,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void SetTargetPos(FVector target_pos, float threshold);
 
-	UPROPERTY(BlueprintReadWrite)
+	
 	FVector Target;
 	
-	UPROPERTY(EditDefaultsOnly)
+	
 	float DistanceThreshold;
 
 	UPROPERTY(EditDefaultsOnly)
