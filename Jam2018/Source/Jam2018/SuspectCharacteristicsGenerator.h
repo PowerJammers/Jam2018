@@ -47,9 +47,11 @@ protected:
 	void DistributeCharacteristics();
 	void DistributeParameters();
 	void ModifyMeshes();
+	void GetObjectiveTypes();
 
 	bool AreHintersLeft();
 	void GetNewHinters();
+	bool IsTypeObjectives(int charact, int type);
 
 	UPROPERTY(Editanywhere)
 	TSubclassOf<AGhostCharacter> mGhostCharacter;
@@ -69,5 +71,6 @@ private:
 	std::vector<AGhostCharacter *> mvpCharacters;
 
 	int obj_char, obj_type, hint_char, hint_type;
+	std::vector<int> mvObjectiveParams;
 	bool obj_set = false;
 };
