@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GhostCharacter.h"
 #include "JamCrowdManager.generated.h"
 
 struct FCrowdGroup;
-class AGhostCharacter;
 
 USTRUCT()
 struct FCrowdGroupMember

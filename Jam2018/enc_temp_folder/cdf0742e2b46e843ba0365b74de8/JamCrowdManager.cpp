@@ -3,7 +3,7 @@
 #include "JamCrowdManager.h"
 #include "MoveTowardsPosBehaviorComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "GhostCharacter.h"
+
 // Sets default values
 AJamCrowdManager::AJamCrowdManager()
 {
@@ -223,4 +223,6 @@ void AJamCrowdManager::DeleteAgent(AGhostCharacter * agent)
 			return;
 		}
 	}
+	
+	//agent->DestroyActor();
 }
