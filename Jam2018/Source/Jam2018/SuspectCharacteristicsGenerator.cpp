@@ -16,6 +16,18 @@ ASuspectCharacteristicsGenerator::ASuspectCharacteristicsGenerator()
 
 }
 
+bool ASuspectCharacteristicsGenerator::IsSuspectObj(int id)
+{
+	if (mvSuspects[id].characteristics[obj_char].mbPresent && mvSuspects[id].characteristics[obj_char].pCharacteristics->GetCorrespondingValue(mvSuspects[id].characteristics[obj_char].mvParameters[0]) == obj_type)
+		return true;
+	return false;
+}
+
+void ASuspectCharacteristicsGenerator::SuspectDied(int id)
+{
+
+}
+
 void ASuspectCharacteristicsGenerator::AddCharacteristic(ACharacteristic* characteristic)
 {
 	CharacteristicHolder holder;

@@ -21,6 +21,7 @@ struct Suspect
 	int id;
 	std::vector<CharacteristicHolder> characteristics;
 	std::vector<CharacteristicHolder> musteristics;
+	bool dead = false;
 };
 
 UCLASS()
@@ -31,6 +32,9 @@ class JAM2018_API ASuspectCharacteristicsGenerator : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ASuspectCharacteristicsGenerator();
+
+	bool IsSuspectObj(int id);
+	void SuspectDied(int id);
 
 	void AddCharacteristic(ACharacteristic* characteristic);
 
