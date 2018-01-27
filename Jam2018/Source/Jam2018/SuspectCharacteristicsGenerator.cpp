@@ -70,8 +70,9 @@ void ASuspectCharacteristicsGenerator::CreateSuspects()
 	{
 		FActorSpawnParameters SpawnInfo;
 		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		FTransform transform(FVector(i*100, i*100, 300.0f));
+		mvpCharacters.push_back(GetWorld()->SpawnActor<AGhostCharacter>(mGhostCharacter, transform));
 		
-		mvpCharacters.push_back(GetWorld()->SpawnActor<AJam2018Character>(AJam2018Character::StaticClass(), SpawnInfo));
 		suspect.id = i;
 		mvSuspects.push_back(suspect);
 	}

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Characteristic.h"
-#include "Jam2018Character.h"
+#include "GhostCharacter.h"
 #include <vector>
 #include "SuspectCharacteristicsGenerator.generated.h"
 
@@ -42,6 +42,8 @@ protected:
 	void DistributeCharacteristics();
 	void DistributeParameters();
 
+	UPROPERTY(Editanywhere)
+	TSubclassOf<AGhostCharacter> mGhostCharacter;
 private:
 
 	UPROPERTY(Editanywhere)
@@ -55,6 +57,6 @@ private:
 	std::vector<int> mvCharacteristicAmounts;
 	std::vector<CharacteristicHolder> mvMusteristics;
 	std::vector<Suspect> mvSuspects;
-	std::vector<AJam2018Character *> mvpCharacters;
+	std::vector<AGhostCharacter *> mvpCharacters;
 	
 };
