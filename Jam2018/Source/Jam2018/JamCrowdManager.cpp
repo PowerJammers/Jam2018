@@ -126,6 +126,13 @@ void AJamCrowdManager::SetLocationsOfGroupMembers(FCrowdGroup & group)
 	group.GroupRadius = radius;
 	float degrees_delta = 360.f / group_size;
 	float degrees = 0.f;
+	FVector midpoint = FVector::ZeroVector;
+	for (FCrowdGroupMember & member : group.GroupMembers)
+	{
+		midpoint += member.actor->GetActorLocation();
+	}
+	group.GroupMidpoint = midpoint / group.GroupMembers.Num();
+
 	for (FCrowdGroupMember & member : group.GroupMembers)
 	{
 		float x = FMath::Cos(FMath::DegreesToRadians(degrees));
