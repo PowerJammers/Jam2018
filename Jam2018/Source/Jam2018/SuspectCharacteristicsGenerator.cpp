@@ -6,6 +6,7 @@
 #include <random>
 #include <algorithm>
 #include <chrono>
+#include "Runtime/Engine/Classes/Engine/TargetPoint.h"
 
 
 // Sets default values
@@ -93,7 +94,7 @@ void ASuspectCharacteristicsGenerator::BeginPlay()
 
 	ModifyMeshes();
 
-	//RegisterCrowd();
+	RegisterCrowd();
 }
 void ASuspectCharacteristicsGenerator::ModifyMeshes()
 {
@@ -114,6 +115,9 @@ void ASuspectCharacteristicsGenerator::ModifyMeshes()
 
 void ASuspectCharacteristicsGenerator::CreateSuspects()
 {
+	TArray<AActor*> positions;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATargetPoint::StaticClass(), positions);
+
 	Suspect suspect;
 	suspect.characteristics = mvCharacteristics;
 	suspect.musteristics = mvMusteristics;
@@ -122,7 +126,8 @@ void ASuspectCharacteristicsGenerator::CreateSuspects()
 		int randChar = FMath::RandRange(0, 2);
 		FActorSpawnParameters SpawnInfo;
 		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		FTransform transform(FVector(i * 100, i * 100, 300.0f));
+		int index = FMath::RandRange(0, positions.Num()-1);
+		FTransform transform(positions[index]->GetActorLocation());
 		AGhostCharacter * ghost = GetWorld()->SpawnActor<AGhostCharacter>(mGhostCharacter[randChar], transform);
 		ghost->Id = i;
 		mvpCharacters.push_back(ghost);
