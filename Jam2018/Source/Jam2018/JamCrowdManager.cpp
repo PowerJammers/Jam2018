@@ -120,7 +120,7 @@ void AJamCrowdManager::SetLocationsOfGroupMembers()
 
 void AJamCrowdManager::SetLocationsOfGroupMembers(FCrowdGroup & group, bool update_group_mid)
 {
-	float radius_per_member = 20.f;
+	float radius_per_member = 35.f;
 	int group_size = group.GroupMembers.Num();
 	if (group_size == 1)
 		return;
