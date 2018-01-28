@@ -380,11 +380,13 @@ bool ASuspectCharacteristicsGenerator::RegisterCrowd_Implementation()
 
 void ASuspectCharacteristicsGenerator::FillHints()
 {
-	ActiveHints.Add(FHintIndex(0, 0));
-	ActiveHints.Add(FHintIndex(1, 0));
-	ActiveHints.Add(FHintIndex(2, 0));
-	ActiveHints.Add(FHintIndex(3, 0));
-	ActiveHints.Add(FHintIndex(4, 0));
+	for (int i = 0; i < mvCharacteristics.size(); i++)
+	{
+		int max = mvCharacteristics[i].pCharacteristics->GetCorrespondingValue(1.f) + 1;
+		for (int j = 0; j < max; j++)
+			if(!IsTypeObjectives(i, j))
+				ActiveHints.Add(FHintIndex(i, j));
+	}
 }
 
 FHintIndex ASuspectCharacteristicsGenerator::GetNextHint()
