@@ -63,11 +63,16 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	bool RegisterCrowd();
 
+	UFUNCTION(BlueprintNativeEvent)
+	bool UpdateHint(int charID, int typeID);
+
 	UFUNCTION(BlueprintCallable)
 	FHintIndex GetNextHint();
 	
 	UPROPERTY(Editanywhere, BlueprintReadWrite)
 	TArray<FHintIndex> ActiveHints;
+
+
 
 protected:
 	// Called when the game starts or when spawned

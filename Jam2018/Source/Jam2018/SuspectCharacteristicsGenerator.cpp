@@ -359,6 +359,7 @@ void ASuspectCharacteristicsGenerator::GetNewHinters()
 					hint_char = curr2;
 					hint_type = curr3;
 					output(curr2, curr3);
+					UpdateHint(curr2, curr3);
 					return;
 				}
 
@@ -543,4 +544,9 @@ void ASuspectCharacteristicsGenerator::output(int c, int t)
 		break;
 	}
 	}
+}
+
+bool ASuspectCharacteristicsGenerator::UpdateHint_Implementation(int charID, int typeID)
+{
+	return false;
 }
