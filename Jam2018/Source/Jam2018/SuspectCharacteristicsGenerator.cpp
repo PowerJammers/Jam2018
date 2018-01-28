@@ -319,6 +319,9 @@ void ASuspectCharacteristicsGenerator::GetNewHinters()
 		if (curr >= mvSuspects.size())
 			curr = 0;
 
+		if (mvSuspects[curr].dead)
+			continue;
+
 		// Random characteristic start
 
 		int start2 = FMath::RandRange(0, mvCharacteristics.size() - 1);
@@ -376,7 +379,7 @@ bool ASuspectCharacteristicsGenerator::RegisterCrowd_Implementation()
 
 void ASuspectCharacteristicsGenerator::output(int c, int t)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%i, %i"),c,t);
+	UE_LOG(LogTemp, Warning, TEXT("%i, %i"), c, t);
 
 	switch (c)
 	{
