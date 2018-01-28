@@ -95,10 +95,14 @@ void ASuspectCharacteristicsGenerator::ModifyMeshes()
 		for (size_t j = 0; j < mvSuspects[i].characteristics.size(); ++j)
 		{
 			if (mvSuspects[i].characteristics[j].mbPresent)
-			{				
+			{
 				int object, type;
 				mvSuspects[i].characteristics[j].pCharacteristics->GetData(object, type);
 				int id = FPlatformMath::FloorToInt(mvSuspects[i].characteristics[j].mvParameters[0] * type * 0.9999f);
+				mvpCharacters[i]->SetCharacteristic(object, id);
+			}
+		}
+	}
 }
 
 void ASuspectCharacteristicsGenerator::CreateSuspects()
@@ -250,24 +254,6 @@ void ASuspectCharacteristicsGenerator::DistributeParameters()
 				CharacteristicHolder& holder = mvSuspects[w].musteristics[i];
 				if (holder.mbPresent)
 					holder.mvParameters[j] = rand_buffer[w];
-			}
-		}
-	}
-}
-
-void ASuspectCharacteristicsGenerator::ModifyMeshes()
-{
-	for (size_t i = 0; i < mSuspectAmount; ++i)
-	{
-		for (size_t j = 0; j < mvSuspects[i].characteristics.size(); ++j)
-		{
-			if (mvSuspects[i].characteristics[j].mbPresent)
-			{
-				int object, type;
-				mvSuspects[i].characteristics[j].pCharacteristics->GetData(object, type);
-				int id = FPlatformMath::FloorToInt(mvSuspects[i].characteristics[j].mvParameters[0] * type - 0.001f);
-
-				mvpCharacters[i]->SetCharacteristic(object, id);
 			}
 		}
 	}
