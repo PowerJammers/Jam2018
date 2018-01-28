@@ -87,6 +87,8 @@ void ASuspectCharacteristicsGenerator::BeginPlay()
 	GetNewHinters();
 
 	ModifyMeshes();
+
+	RegisterCrowd();
 }
 void ASuspectCharacteristicsGenerator::ModifyMeshes()
 {
@@ -354,5 +356,9 @@ bool ASuspectCharacteristicsGenerator::IsTypeObjectives(int charact, int type)
 
 	if (mvObjectiveParams[charact] == type)
 		return true;
+	return false;
+}
+bool ASuspectCharacteristicsGenerator::RegisterCrowd_Implementation()
+{
 	return false;
 }

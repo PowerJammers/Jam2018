@@ -44,6 +44,9 @@ public:
 
 	void AddCharacteristic(ACharacteristic* characteristic);
 
+	UFUNCTION(BlueprintNativeEvent)
+	bool RegisterCrowd();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
