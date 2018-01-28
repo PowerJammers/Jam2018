@@ -54,7 +54,7 @@ protected:
 	bool IsTypeObjectives(int charact, int type);
 
 	UPROPERTY(Editanywhere)
-	TSubclassOf<AGhostCharacter> mGhostCharacter;
+	TSubclassOf<AGhostCharacter> mGhostCharacter[3];
 private:
 
 	UPROPERTY(Editanywhere)
