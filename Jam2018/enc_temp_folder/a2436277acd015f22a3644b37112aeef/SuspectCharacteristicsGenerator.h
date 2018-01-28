@@ -33,10 +33,10 @@ struct FHintIndex
 	FHintIndex() : charID(-1), typeID(-1) {};
 	FHintIndex(int _charid, int _typeid) : charID(_charid), typeID(_typeid) {};
 	
-	UPROPERTY(Editanywhere, BlueprintReadWrite)
+	UPROPERTY(Editanywhere)
 	int charID;
 	
-	UPROPERTY(Editanywhere, BlueprintReadWrite)
+	UPROPERTY(Editanywhere)
 	int typeID;
 };
 

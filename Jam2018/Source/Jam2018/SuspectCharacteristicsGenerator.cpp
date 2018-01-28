@@ -13,7 +13,6 @@ ASuspectCharacteristicsGenerator::ASuspectCharacteristicsGenerator()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 bool ASuspectCharacteristicsGenerator::IsSuspectObj(int id)
@@ -92,6 +91,8 @@ void ASuspectCharacteristicsGenerator::BeginPlay()
 	GetNewHinters();
 
 	ModifyMeshes();
+
+	FillHints();
 
 	//RegisterCrowd();
 }
@@ -375,6 +376,22 @@ bool ASuspectCharacteristicsGenerator::IsTypeObjectives(int charact, int type)
 bool ASuspectCharacteristicsGenerator::RegisterCrowd_Implementation()
 {
 	return false;
+}
+
+void ASuspectCharacteristicsGenerator::FillHints()
+{
+	ActiveHints.Add(FHintIndex(0, 0));
+	ActiveHints.Add(FHintIndex(1, 0));
+	ActiveHints.Add(FHintIndex(2, 0));
+	ActiveHints.Add(FHintIndex(3, 0));
+	ActiveHints.Add(FHintIndex(4, 0));
+}
+
+FHintIndex ASuspectCharacteristicsGenerator::GetNextHint()
+{
+	if(ActiveHints.Num() > 0)
+		return ActiveHints.Pop();
+	return FHintIndex(-1,-1);
 }
 
 void ASuspectCharacteristicsGenerator::output(int c, int t)
