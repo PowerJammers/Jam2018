@@ -77,7 +77,7 @@ public:
 	private:
 
 	TArray<FCrowdGroupMember> MovingMembers;
-	void SetLocationsOfGroupMembers(FCrowdGroup & group, bool update_group_mid = true);
+	void SetLocationsOfGroupMembers(FCrowdGroup & group, bool update_group_mid = false);
 
 	bool SetAgentToMove();
 

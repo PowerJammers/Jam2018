@@ -197,7 +197,6 @@ void AJamCrowdManager::DeleteAgent(AGhostCharacter * agent)
 	bool found = false;
 	for (FCrowdGroup & group : CrowdGroups)
 	{
-
 		for (int i = 0; i < group.GroupMembers.Num(); i++)
 		{
 			if (group.GroupMembers[i].actor == agent)

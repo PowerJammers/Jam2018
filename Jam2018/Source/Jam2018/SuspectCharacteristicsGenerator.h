@@ -21,6 +21,7 @@ struct Suspect
 	int id;
 	std::vector<CharacteristicHolder> characteristics;
 	std::vector<CharacteristicHolder> musteristics;
+	TArray<int> char_order;
 	bool dead = false;
 };
 
@@ -64,6 +65,8 @@ protected:
 	UPROPERTY(Editanywhere)
 	TSubclassOf<AGhostCharacter> mGhostCharacter[3];
 private:
+
+	void output(int c, int t);
 
 	UPROPERTY(Editanywhere)
 	int mSuspectAmount;

@@ -19,7 +19,7 @@ public:
 	int GetParameterAmount() { return mvParameters.size(); }
 	virtual void SetParameter(int id, float value) {};
 	void GetData(int& object, int& type) { object = mObject; type = mType; }
-	int GetCorrespondingValue(float fract){return fract*mType*0.999;}
+	int GetCorrespondingValue(float fract){return FMath::FloorToInt(fract*mType*0.99f);}
 
 	UPROPERTY(Editanywhere)
 	bool mbIsMust = false;

@@ -11,7 +11,7 @@
 // Sets default values
 ASuspectCharacteristicsGenerator::ASuspectCharacteristicsGenerator()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
@@ -25,7 +25,10 @@ bool ASuspectCharacteristicsGenerator::IsSuspectObj(int id)
 
 bool ASuspectCharacteristicsGenerator::IsSuspectHinter(int id)
 {
-	if (mvSuspects[id].characteristics[hint_char].mbPresent && mvSuspects[id].characteristics[hint_char].pCharacteristics->GetCorrespondingValue(mvSuspects[id].characteristics[hint_char].mvParameters[0]) == hint_type)
+	bool present = mvSuspects[id].characteristics[hint_char].mbPresent;
+	auto param = mvSuspects[id].characteristics[hint_char].mvParameters[0];
+	int value = mvSuspects[id].characteristics[hint_char].pCharacteristics->GetCorrespondingValue(param);
+	if (present && value == hint_type)
 		return true;
 	return false;
 }
@@ -69,10 +72,12 @@ void ASuspectCharacteristicsGenerator::BeginPlay()
 	// Get all of the characteristics
 	TArray<AActor*> characteristics;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacteristic::StaticClass(), characteristics);
-	
+
+	characteristics.Sort([&](AActor & LHS, AActor & RHS) { return FString(LHS.GetName()) < FString(RHS.GetName()); });
+
 	// Register them
 	for (int i = 0; i < characteristics.Num(); i++)
-	{			
+	{
 		AddCharacteristic(Cast<ACharacteristic>(characteristics[i]));
 	}
 
@@ -88,7 +93,7 @@ void ASuspectCharacteristicsGenerator::BeginPlay()
 
 	ModifyMeshes();
 
-	RegisterCrowd();
+	//RegisterCrowd();
 }
 void ASuspectCharacteristicsGenerator::ModifyMeshes()
 {
@@ -114,10 +119,10 @@ void ASuspectCharacteristicsGenerator::CreateSuspects()
 	suspect.musteristics = mvMusteristics;
 	for (int i = 0; i < mSuspectAmount; i++)
 	{
-		int randChar = FMath::RandRange(0,2);
+		int randChar = FMath::RandRange(0, 2);
 		FActorSpawnParameters SpawnInfo;
 		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		FTransform transform(FVector(i*100, i*100, 300.0f));
+		FTransform transform(FVector(i * 100, i * 100, 300.0f));
 		AGhostCharacter * ghost = GetWorld()->SpawnActor<AGhostCharacter>(mGhostCharacter[randChar], transform);
 		ghost->Id = i;
 		mvpCharacters.push_back(ghost);
@@ -158,7 +163,7 @@ void ASuspectCharacteristicsGenerator::DistributeCharacteristics()
 		c_pool.push_back(FMath::RandRange(0, mvCharacteristics.size() - 1));
 
 	// Distribute them
-	for(int i = 0; i < mMaxCharacteristicsPerSuspect; i++)
+	for (int i = 0; i < mMaxCharacteristicsPerSuspect; i++)
 		for (int j = 0; j < mvSuspects.size(); j++)
 		{
 			int value;
@@ -185,6 +190,9 @@ void ASuspectCharacteristicsGenerator::DistributeParameters()
 	{
 		// Fill a vector with the values for the characteristics parameters
 		int amount = mvCharacteristicAmounts[i];
+		if (amount == 0)
+			continue;
+
 		float value = 0.f;
 		float step = 1.f / (amount - 1);
 		std::vector<float> rand_buffer;
@@ -193,7 +201,7 @@ void ASuspectCharacteristicsGenerator::DistributeParameters()
 			rand_buffer.push_back(value);
 			value += step;
 		}
-		
+
 		// Randomize it and assign it to each parameter
 		int param_amount = mvCharacteristics[i].pCharacteristics->GetParameterAmount();
 		for (int j = 0; j < param_amount; j++)
@@ -307,19 +315,19 @@ void ASuspectCharacteristicsGenerator::GetNewHinters()
 	int curr = start;
 	do
 	{
-		start++;
-		if (start >= mvSuspects.size())
-			start = 0;
+		curr++;
+		if (curr >= mvSuspects.size())
+			curr = 0;
 
 		// Random characteristic start
-		
+
 		int start2 = FMath::RandRange(0, mvCharacteristics.size() - 1);
 		int curr2 = start2;
 		do
 		{
-			start2++;
-			if (start2 >= mvCharacteristics.size())
-				start2 = 0;
+			curr2++;
+			if (curr2 >= mvCharacteristics.size())
+				curr2 = 0;
 
 			// Ignore if characteristic not present
 			if (mvSuspects[curr].characteristics[curr2].mbPresent == false)
@@ -330,9 +338,10 @@ void ASuspectCharacteristicsGenerator::GetNewHinters()
 			int max = holder.pCharacteristics->GetCorrespondingValue(1.f);
 			int start3 = FMath::RandRange(0, max);
 			int curr3 = start3;
-			
+
 			do
 			{
+				curr3++;
 				if (curr3 > max)
 					curr3 = 0;
 
@@ -341,6 +350,8 @@ void ASuspectCharacteristicsGenerator::GetNewHinters()
 				{
 					hint_char = curr2;
 					hint_type = curr3;
+					output(curr2, curr3);
+					return;
 				}
 
 			} while (curr3 != start3);
@@ -351,8 +362,8 @@ void ASuspectCharacteristicsGenerator::GetNewHinters()
 
 bool ASuspectCharacteristicsGenerator::IsTypeObjectives(int charact, int type)
 {
-	if(mvObjectiveParams.size() < charact)
-	return false;
+	if (mvObjectiveParams.size() < charact)
+		return false;
 
 	if (mvObjectiveParams[charact] == type)
 		return true;
@@ -361,4 +372,149 @@ bool ASuspectCharacteristicsGenerator::IsTypeObjectives(int charact, int type)
 bool ASuspectCharacteristicsGenerator::RegisterCrowd_Implementation()
 {
 	return false;
+}
+
+void ASuspectCharacteristicsGenerator::output(int c, int t)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%i, %i"),c,t);
+
+	switch (c)
+	{
+	case 0:
+	{
+		switch (t)
+		{
+		case 0:
+			UE_LOG(LogTemp, Warning, TEXT("Gorro rojo"));
+			break;
+		case 1:
+			UE_LOG(LogTemp, Warning, TEXT("Gorro verde"));
+			break;
+		case 2:
+			UE_LOG(LogTemp, Warning, TEXT("Band roja"));
+			break;
+		case 3:
+			UE_LOG(LogTemp, Warning, TEXT("Band verde"));
+			break;
+		default:
+			break;
+		}
+		break;
+	}
+	case 1:
+	{
+		switch (t)
+		{
+		case 0:
+			UE_LOG(LogTemp, Warning, TEXT("Circular rojo"));
+			break;
+		case 1:
+			UE_LOG(LogTemp, Warning, TEXT("Circular verde"));
+			break;
+		case 2:
+			UE_LOG(LogTemp, Warning, TEXT("Triangular rojo"));
+			break;
+		case 3:
+			UE_LOG(LogTemp, Warning, TEXT("Triangular verde"));
+			break;
+		case 4:
+			UE_LOG(LogTemp, Warning, TEXT("Square rojo"));
+			break;
+		case 5:
+			UE_LOG(LogTemp, Warning, TEXT("Square verde"));
+			break;
+		case 6:
+			UE_LOG(LogTemp, Warning, TEXT("Parche rojo"));
+			break;
+		case 7:
+			UE_LOG(LogTemp, Warning, TEXT("Parche verde"));
+			break;
+		case 8:
+			UE_LOG(LogTemp, Warning, TEXT("Nariz grande roja"));
+			break;
+		case 9:
+			UE_LOG(LogTemp, Warning, TEXT("Nariz grande verde"));
+			break;
+		case 10:
+			UE_LOG(LogTemp, Warning, TEXT("Nariz pequeña roja"));
+			break;
+		case 11:
+			UE_LOG(LogTemp, Warning, TEXT("Nariz pequeña verde"));
+			break;
+		case 12:
+			UE_LOG(LogTemp, Warning, TEXT("Gafas rojas"));
+			break;
+		case 13:
+			UE_LOG(LogTemp, Warning, TEXT("Gafas verdes"));
+			break;
+		default:
+			break;
+		}
+		break;
+	}
+	case 2:
+	{
+		switch (t)
+		{
+		case 0:
+			UE_LOG(LogTemp, Warning, TEXT("Bigote rojo"));
+			break;
+		case 1:
+			UE_LOG(LogTemp, Warning, TEXT("Bigote verde"));
+			break;
+		case 2:
+			UE_LOG(LogTemp, Warning, TEXT("Buff rojo"));
+			break;
+		case 3:
+			UE_LOG(LogTemp, Warning, TEXT("Buff verde"));
+			break;
+		default:
+			break;
+		}
+		break;
+	}
+	case 3:
+	{
+		switch (t)
+		{
+		case 0:
+			UE_LOG(LogTemp, Warning, TEXT("Corbata roja"));
+			break;
+		case 1:
+			UE_LOG(LogTemp, Warning, TEXT("Corbata verde"));
+			break;
+		case 2:
+			UE_LOG(LogTemp, Warning, TEXT("Pajarita rojo"));
+			break;
+		case 3:
+			UE_LOG(LogTemp, Warning, TEXT("Pajarita verde"));
+			break;
+		default:
+			break;
+		}
+		break;
+	}
+	case 4:
+	{
+		switch (t)
+		{
+		case 0:
+			UE_LOG(LogTemp, Warning, TEXT("Marron"));
+			break;
+		case 1:
+			UE_LOG(LogTemp, Warning, TEXT("Rosa"));
+			break;
+		case 2:
+			UE_LOG(LogTemp, Warning, TEXT("Verde"));
+			break;
+		default:
+			break;
+		}
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
 }
