@@ -21,6 +21,7 @@ struct Suspect
 	int id;
 	std::vector<CharacteristicHolder> characteristics;
 	std::vector<CharacteristicHolder> musteristics;
+	bool dead = false;
 };
 
 UCLASS()
@@ -32,6 +33,10 @@ public:
 	// Sets default values for this actor's properties
 	ASuspectCharacteristicsGenerator();
 
+	bool IsSuspectObj(int id);
+	bool IsSuspectHinter(int id);
+	void SuspectDied(int id);
+
 	void AddCharacteristic(ACharacteristic* characteristic);
 
 protected:
@@ -42,6 +47,11 @@ protected:
 	void DistributeCharacteristics();
 	void DistributeParameters();
 	void ModifyMeshes();
+	void GetObjectiveTypes();
+
+	bool AreHintersLeft();
+	void GetNewHinters();
+	bool IsTypeObjectives(int charact, int type);
 
 	UPROPERTY(Editanywhere)
 	TSubclassOf<AGhostCharacter> mGhostCharacter[3];
@@ -59,5 +69,8 @@ private:
 	std::vector<CharacteristicHolder> mvMusteristics;
 	std::vector<Suspect> mvSuspects;
 	std::vector<AGhostCharacter *> mvpCharacters;
-	
+
+	int obj_char, obj_type, hint_char, hint_type;
+	std::vector<int> mvObjectiveParams;
+	bool obj_set = false;
 };

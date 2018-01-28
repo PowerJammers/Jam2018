@@ -11,14 +11,15 @@ UCLASS()
 class JAM2018_API ACharacteristic : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ACharacteristic();
 
 	int GetParameterAmount() { return mvParameters.size(); }
 	virtual void SetParameter(int id, float value) {};
-	void GetData(int& object, int& type){object = mObject; type = mType;}
+	void GetData(int& object, int& type) { object = mObject; type = mType; }
+	int GetCorrespondingValue(float fract){return fract*mType*0.999;}
 
 	UPROPERTY(Editanywhere)
 	bool mbIsMust = false;

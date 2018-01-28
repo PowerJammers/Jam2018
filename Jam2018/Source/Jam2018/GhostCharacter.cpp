@@ -32,3 +32,7 @@ void AGhostCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 }
 
+bool AGhostCharacter::MoveToLocation_Implementation(FVector target_pos, FVector LookAtPosFinished)
+{
+	return false;
+}

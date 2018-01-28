@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GhostCharacter.h"
 #include "JamCrowdManager.generated.h"
 
 struct FCrowdGroup;
@@ -13,7 +14,7 @@ struct FCrowdGroupMember
 {
 	GENERATED_BODY()
 
-	AActor * actor;
+	AGhostCharacter * actor;
 	FCrowdGroup * group;
 };
 
@@ -51,7 +52,7 @@ public:
 	void SetLocationsOfGroupMembers();
 
 	UPROPERTY(BlueprintReadWrite)
-	TArray<AActor*> CrowdActors;
+	TArray<AGhostCharacter*> CrowdActors;
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FCrowdGroup> CrowdGroups;
