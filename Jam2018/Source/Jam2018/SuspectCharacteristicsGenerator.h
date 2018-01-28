@@ -33,8 +33,13 @@ public:
 	// Sets default values for this actor's properties
 	ASuspectCharacteristicsGenerator();
 
+	UFUNCTION(BlueprintCallable)
 	bool IsSuspectObj(int id);
+
+	UFUNCTION(BlueprintCallable)
 	bool IsSuspectHinter(int id);
+
+	UFUNCTION(BlueprintCallable)
 	void SuspectDied(int id);
 
 	void AddCharacteristic(ACharacteristic* characteristic);

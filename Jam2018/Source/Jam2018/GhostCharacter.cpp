@@ -36,3 +36,7 @@ bool AGhostCharacter::MoveToLocation_Implementation(FVector target_pos, FVector 
 {
 	return false;
 }
+bool AGhostCharacter::SetCharacteristic_Implementation(const int CharID, const int TypeId)
+{
+	return false;
+}

@@ -116,7 +116,9 @@ void ASuspectCharacteristicsGenerator::CreateSuspects()
 		FActorSpawnParameters SpawnInfo;
 		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		FTransform transform(FVector(i*100, i*100, 300.0f));
-		mvpCharacters.push_back(GetWorld()->SpawnActor<AGhostCharacter>(mGhostCharacter[randChar], transform));				
+		AGhostCharacter * ghost = GetWorld()->SpawnActor<AGhostCharacter>(mGhostCharacter[randChar], transform);
+		ghost->Id = i;
+		mvpCharacters.push_back(ghost);
 		suspect.id = i;
 		mvSuspects.push_back(suspect);
 	}
@@ -347,6 +349,9 @@ void ASuspectCharacteristicsGenerator::GetNewHinters()
 
 bool ASuspectCharacteristicsGenerator::IsTypeObjectives(int charact, int type)
 {
+	if(mvObjectiveParams.size() < charact)
+	return false;
+
 	if (mvObjectiveParams[charact] == type)
 		return true;
 	return false;

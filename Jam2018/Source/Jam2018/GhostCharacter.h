@@ -28,9 +28,13 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "GhostCharacter")
-	void SetCharacteristic(const int CharID, const int TypeId);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "GhostCharacter")
+	bool SetCharacteristic(const int CharID, const int TypeId);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "GhostCharacter")
-		bool MoveToLocation(FVector target_pos, FVector LookAtPosFinished);
+	bool MoveToLocation(FVector target_pos, FVector LookAtPosFinished);
+
+
+	UPROPERTY(BlueprintReadOnly)
+	int Id;
 };
